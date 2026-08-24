@@ -26,7 +26,7 @@ CineFlow AI is an enterprise-grade autonomous agent architecture that transforms
 ### 1. Install Dependencies
 Open your Terminal or Command Prompt and navigate to the `src` directory:
 ```bash
-cd "D:\zzzzzzzzzzz AntiGravity\Bounty\src2\src"
+cd "D:\src2\src"
 ```
 Install the required library for the Web UI:
 ```bash
