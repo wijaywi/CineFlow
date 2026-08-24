@@ -57,7 +57,11 @@ Your browser will automatically open at `http://localhost:8501`.
 > * 🏗️ Core Project Structure
 
 > `app.py`: Main entry point for the Streamlit Web UI.
+> 
 > `main.py`: Alternative entry point for Command Line (CLI) execution.
+> 
 > `core/grafana_mcp.py`: Implementation of the Model Context Protocol (MCP) client to pull metrics and server health status from Grafana Cloud.
+> 
 > `core/orchestrator.py`: The logic engine that controls agent iterations and budget constraints.
+> 
 > `agents/`: Contains all modular agents (`director_agent`, `compliance_agent`, `render_agent`, `qc_agent`).
