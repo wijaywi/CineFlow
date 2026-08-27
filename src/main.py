@@ -28,6 +28,7 @@ from core.optimization import OptimizationEngine
 from agents.qc_agent import QCAgent
 from agents.director_agent import DirectorAgent
 from agents.compliance_agent import ComplianceAgent
+from agents.clearance_agent import ClearanceAgent
 from agents.render_agent import RenderAgent
 from agents.distribution_agent import DistributionAgent
 
@@ -53,6 +54,7 @@ def run_simulation():
     # 2. Instantiate and Register Agents
     qc_agent = QCAgent(media_db=media_db)
     compliance_agent = ComplianceAgent(media_db=media_db)
+    clearance_agent = ClearanceAgent(media_db=media_db)
     
     # Initialize Grafana MCP Client for ADK tools (credentials from ENV)
     from core.grafana_mcp import GrafanaMCPClient
@@ -67,6 +69,7 @@ def run_simulation():
     orchestrator.register_agent("QC", Agent("QC_Agent", "Quality Control"))
     orchestrator.register_agent("Director", Agent("Director_Agent", "Creative Direction"))
     orchestrator.register_agent("Compliance", Agent("Compliance_Agent", "Verification"))
+    orchestrator.register_agent("Clearance", Agent("Clearance_Agent", "Legal & Rights Clearance"))
     orchestrator.register_agent("Render", Agent("Render_Agent", "Execution"))
     orchestrator.register_agent("Distribution", Agent("Distribution_Agent", "Publishing"))
 
@@ -196,6 +199,16 @@ def run_simulation():
     if loaded_state:
         logger.info(f"Successfully loaded project state for {loaded_state.project_id}")
 
+
+    # Step C.5: Legal Clearance
+    logger.info("\n--- PHASE 3.5: LEGAL CLEARANCE ---")
+    is_cleared, clearance_report = clearance_agent.perform_clearance_check(manifest)
+    orchestrator.record_agent_cost(project_id, 0.25)
+    observability.record_cost(project_id, "Clearance", 0.25)
+    if not is_cleared:
+        logger.error("Project failed Legal & Clearance Gate. Halt rendering to prevent legal liability.")
+        return
+        
     # Step D: Rendering
     logger.info("\n--- PHASE 4: DETERMINISTIC RENDERING ---")
     receipt = render_agent.generate_and_execute(manifest)
