@@ -54,9 +54,9 @@ def run_simulation():
     qc_agent = QCAgent(media_db=media_db)
     compliance_agent = ComplianceAgent(media_db=media_db)
     
-    # Initialize Grafana MCP Client for ADK tools
+    # Initialize Grafana MCP Client for ADK tools (credentials from ENV)
     from core.grafana_mcp import GrafanaMCPClient
-    mcp_client = GrafanaMCPClient(endpoint="https://mcp-grafana.hosted.local", api_key="SIMULATED_KEY")
+    mcp_client = GrafanaMCPClient()
     
     # DirectorAgent now takes compliance and mcp_client as ADK Tools
     director_agent = DirectorAgent(media_db=media_db, compliance_agent=compliance_agent, mcp_client=mcp_client)

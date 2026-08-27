@@ -78,22 +78,16 @@ class RenderAgent:
         commands.append(concat_cmd)
         
         # 3. Add B-Rolls (if any)
+        current_input = primary_track_path
         if manifest.v2_video_only:
-            current_input = primary_track_path
             for b_idx, broll in enumerate(manifest.v2_video_only):
                 b_asset = self.media_db.get_asset(broll.clip_id)
                 if not b_asset or not getattr(b_asset, 'source_uri', None):
                     logger.error(f"[{self.name}] B-Roll {broll.clip_id} missing. Failing closed.")
                     return None
                 broll_uri = os.path.abspath(b_asset.source_uri)
-                if not os.path.exists(broll_uri):
-                    logger.error(f"[{self.name}] B-Roll file {broll_uri} missing on disk. Failing closed.")
-                    return None
                 
-                out_layer = os.path.join(job_dir, f"layer_{b_idx}.mp4")
-                if b_idx == len(manifest.v2_video_only) - 1:
-                    out_layer = final_output_path
-                    
+                out_layer = os.path.join(job_dir, f"layer_v_{b_idx}.mp4")
                 overlay_cmd = [
                     "ffmpeg", "-i", current_input, "-i", broll_uri,
                     "-filter_complex", f"[0:v][1:v]overlay=enable='between(t,{broll.insert_at_timeline:.3f},{broll.insert_at_timeline + broll.duration:.3f})'[outv]",
@@ -102,8 +96,32 @@ class RenderAgent:
                 ]
                 commands.append(overlay_cmd)
                 current_input = out_layer
-        else:
-            commands.append(["python", "-c", f"import os; os.replace(r'{primary_track_path}', r'{final_output_path}')"])
+
+        # 4. Mix Voiceovers/Audio (if any)
+        if getattr(manifest, 'a1_audio_only', None):
+            for a_idx, a_insert in enumerate(manifest.a1_audio_only):
+                # We assume the asset_id is the filename in the working directory or full path
+                audio_uri = a_insert.asset_id
+                if not os.path.exists(audio_uri):
+                     audio_uri = f"{a_insert.asset_id}.mp3" # Fallback if they didn't include extension
+                if not os.path.exists(audio_uri):
+                    logger.error(f"[{self.name}] Audio file {audio_uri} missing. Failing closed.")
+                    return None
+                
+                out_layer = os.path.join(job_dir, f"layer_a_{a_idx}.mp4")
+                # Use amix to mix original audio and voiceover delayed by insert_at_timeline
+                delay_ms = int(a_insert.insert_at_timeline * 1000)
+                mix_cmd = [
+                    "ffmpeg", "-i", current_input, "-i", audio_uri,
+                    "-filter_complex", f"[1:a]adelay={delay_ms}|{delay_ms}[delayed]; [0:a][delayed]amix=inputs=2:duration=first[outa]",
+                    "-map", "0:v", "-map", "[outa]", "-c:v", "copy", 
+                    out_layer, "-y"
+                ]
+                commands.append(mix_cmd)
+                current_input = out_layer
+        
+        # 5. Final Output rename
+        commands.append(["python", "-c", f"import os, shutil; shutil.copy(r'{current_input}', r'{final_output_path}')"])
 
         # 4. EXECUTE COMMANDS
         logger.info(f"[{self.name}] Writing {concat_list_path}...")

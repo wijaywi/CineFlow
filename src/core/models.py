@@ -71,12 +71,19 @@ class BRollInsert(BaseModel):
     duration: float = Field(gt=0.0)
     reasoning: str
 
+class AudioInsert(BaseModel):
+    asset_id: str
+    insert_at_timeline: float = Field(ge=0.0, description="Insertion point on the global timeline")
+    duration: float = Field(gt=0.0)
+    reasoning: str
+
 class TimelineManifest(BaseModel):
     project_id: str
     version: int
     context: str = Field(default="")
     v1_audio_video: List[EditDecision] = Field(default_factory=list)
     v2_video_only: List[BRollInsert] = Field(default_factory=list)
+    a1_audio_only: List[AudioInsert] = Field(default_factory=list)
     created_at: datetime = Field(default_factory=datetime.utcnow)
 
 class QualityScore(BaseModel):

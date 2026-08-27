@@ -71,6 +71,36 @@ class DirectorAgent:
                 function=verify_manifest_compliance
             )
             
+            def generate_voiceover(text: str) -> str:
+                """
+                Calls Gemini 3.1 Flash TTS to generate a voiceover audio file.
+                Returns a JSON string containing the generated asset_id and duration.
+                """
+                logger.info(f"[{self.name} - ADK Tool] Synthesizing voiceover for: '{text}'...")
+                # Simulated TTS call for hackathon execution
+                import hashlib
+                import os
+                import subprocess
+                
+                # Generate a unique ID based on the text
+                text_hash = hashlib.md5(text.encode('utf-8')).hexdigest()[:8]
+                asset_id = f"voiceover_{text_hash}"
+                filename = f"{asset_id}.mp3"
+                
+                # Create a dummy audio file of ~3 seconds to represent the TTS output
+                if not os.path.exists(filename):
+                    subprocess.run([
+                        "ffmpeg", "-f", "lavfi", "-i", "sine=frequency=440:duration=3",
+                        "-c:a", "libmp3lame", filename, "-y"
+                    ], check=True, capture_output=True)
+                
+                return json.dumps({"asset_id": asset_id, "duration": 3.0})
+                
+            self.tts_tool = adk.Tool(
+                name="generate_voiceover",
+                function=generate_voiceover
+            )
+            
             # 2. Define ADK Agent
             self.agent = adk.Agent(
                 name="cineflow-director",
@@ -80,11 +110,12 @@ You are responsible for generating a TimelineManifest.
 Before finalizing the manifest, you MUST:
 1. Check Grafana for active incidents using `check_grafana_incidents`. If there are active incidents, stop and report the error.
 2. Formulate a draft manifest (JSON).
-3. Check the draft manifest with `verify_manifest_compliance`.
-4. If compliance rejects it, revise the manifest and check again.
+3. If the script requires narration or explanation that is not present in the video, use `generate_voiceover` to create the audio. Then include it in the `a1_audio_only` section of the manifest.
+4. Check the draft manifest with `verify_manifest_compliance`.
+5. If compliance rejects it, revise the manifest and check again.
 Once compliance is approved, return the final JSON manifest and nothing else.
 """,
-                tools=[self.grafana_tool, self.compliance_tool]
+                tools=[self.grafana_tool, self.compliance_tool, self.tts_tool]
             )
 
     def generate_draft_manifest(self, project: ProjectState, semantic_script: str, feedback: str = None) -> TimelineManifest:
@@ -137,7 +168,25 @@ Create EditDecisions to KEEP good parts or CUT bad parts. Return JSON schema."""
                     config=genai.types.GenerateContentConfig(
                         response_mime_type="application/json",
                         response_schema=EditDecisionList,
-                        temperature=0.0
+                        temperature=0.0,
+                        safety_settings=[
+                            genai.types.SafetySetting(
+                                category=genai.types.HarmCategory.HARM_CATEGORY_HATE_SPEECH,
+                                threshold=genai.types.HarmBlockThreshold.BLOCK_MEDIUM_AND_ABOVE,
+                            ),
+                            genai.types.SafetySetting(
+                                category=genai.types.HarmCategory.HARM_CATEGORY_HARASSMENT,
+                                threshold=genai.types.HarmBlockThreshold.BLOCK_MEDIUM_AND_ABOVE,
+                            ),
+                            genai.types.SafetySetting(
+                                category=genai.types.HarmCategory.HARM_CATEGORY_SEXUALLY_EXPLICIT,
+                                threshold=genai.types.HarmBlockThreshold.BLOCK_MEDIUM_AND_ABOVE,
+                            ),
+                            genai.types.SafetySetting(
+                                category=genai.types.HarmCategory.HARM_CATEGORY_DANGEROUS_CONTENT,
+                                threshold=genai.types.HarmBlockThreshold.BLOCK_MEDIUM_AND_ABOVE,
+                            ),
+                        ]
                     )
                 )
                 if response.parsed:
@@ -173,7 +222,8 @@ Create EditDecisions to KEEP good parts or CUT bad parts. Return JSON schema."""
             version=project.current_version,
             context=semantic_script,
             v1_audio_video=decisions,
-            v2_video_only=brolls
+            v2_video_only=brolls,
+            a1_audio_only=[]
         )
         return manifest
 
