@@ -219,8 +219,11 @@ with col_left:
     st.markdown("#### DIRECTOR'S VISION")
     with st.container():
         st.markdown("<div class='card'>", unsafe_allow_html=True)
-        semantic_script = st.text_area("What should the final film communicate?", value="Explain the new product and show traffic. Product Y is waterproof.", height=100)
-        st.markdown("<br/><b>AI UNDERSTANDING</b><br/><span class='ai-tag'>[ Product ]</span><span class='ai-tag'>[ Waterproof ]</span><span class='ai-tag'>[ Traffic ]</span><span class='ai-tag'>[ Commercial ]</span>", unsafe_allow_html=True)
+        semantic_script = st.text_area("What should the final film communicate?", value="Cut the bad parts. Product Y is water-resistant. Please generate an AI voiceover saying 'Welcome to the future of editing' and insert it into the video.", height=100)
+        
+        st.markdown("<small style='color: #888;'>💡 <b>Enterprise Guardrails Active:</b> Try changing 'water-resistant' to 'waterproof' to see the AI's Truth Graph automatically block false advertising claims.</small>", unsafe_allow_html=True)
+        
+        st.markdown("<br/><b>AI UNDERSTANDING</b><br/><span class='ai-tag'>[ Product ]</span><span class='ai-tag'>[ Water-resistant ]</span><span class='ai-tag'>[ Commercial ]</span>", unsafe_allow_html=True)
         st.markdown("</div>", unsafe_allow_html=True)
 
     st.markdown("#### AI GOVERNANCE")

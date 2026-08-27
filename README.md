@@ -9,6 +9,7 @@ This project has been meticulously crafted to fulfill the core criteria of the H
 
 *   **Google Cloud ADK (Phase 1 & 4):** Powered natively by `google-cloud-aiplatform[agent_engines,adk]`. The `DirectorAgent` autonomously orchestrates tools and makes deterministic editing decisions.
 *   **Grafana Labs MCP Integration (Phase 3):** Uses the official `mcp.client.sse` to connect to **Grafana Cloud**. The Director Agent performs *Forced Actions* to check for system incidents (`check_grafana_incidents`) and observability metrics before rendering the final manifest.
+*   **Enterprise Guardrails & Truth Graph (Compliance):** Built-in legal and factual guardrails. The AI extracts claims from the Director's prompt and cross-references them with a corporate Knowledge Base (`truth_graph.py`). If a director requests a false claim (e.g., claiming a product is "waterproof" when it is only "water-resistant"), the agent halts the pipeline to prevent false advertising lawsuits.
 *   **Gemini Multimodal Video Analysis (Phase 2):** Ingests raw video files to analyze scenes, flag dead-air, and extract metadata using Gemini 3.6 Flash.
 *   **Audio & Speech Generation (Phase 2):** Automatically generates missing narrative voiceovers (`generate_voiceover` ADK Tool) and mixes them dynamically using FFmpeg.
 *   **Safety Guardrails (Phase 5):** Hardcoded Gemini `SafetySettings` to block hate speech, harassment, and dangerous content.
