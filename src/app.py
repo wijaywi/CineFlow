@@ -436,7 +436,19 @@ with col_right:
 
     # Custom Footer
     st.markdown("""
-        <div style='text-align: center; margin-top: 50px; margin-bottom: 20px;'>
-            <span style='color: purple; font-size: 10px;'>- Wiwin Wijaya 2026 -</span>
+        <style>
+        .custom-footer {
+            position: fixed;
+            bottom: 20px;
+            left: 0;
+            width: 100%;
+            text-align: center;
+            color: purple;
+            font-size: 12px;
+            z-index: 100;
+        }
+        </style>
+        <div class='custom-footer'>
+            - Wiwin Wijaya 2026 -
         </div>
     """, unsafe_allow_html=True)
