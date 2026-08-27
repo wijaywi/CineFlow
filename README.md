@@ -55,4 +55,3 @@ gcloud run deploy cineflow-ai --source . --region us-central1 --allow-unauthenti
 Alternatively, it can be deployed directly via **Streamlit Community Cloud** by linking this GitHub repository.
 
 ---
-*Built with ❤️ for the Agentic Cinema Hackathon*
