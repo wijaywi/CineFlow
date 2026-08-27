@@ -45,7 +45,7 @@ class TruthGraph:
         instruction_verbs = {"explain", "show", "display", "add", "use", "cut", "pan", "zoom", "make", "create", "generate", "please", "insert"}
         
         for s in sentences:
-            s_clean = s.strip('"\\' ')
+            s_clean = s.strip("\"' ")
             s_lower = s_clean.lower()
             first_word = s_lower.split()[0] if s_lower else ""
             
