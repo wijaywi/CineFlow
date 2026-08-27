@@ -434,5 +434,12 @@ with col_right:
                 st.rerun()
         st.markdown("</div>", unsafe_allow_html=True)
 
+    # Custom Footer
+    st.markdown("""
+        <div style='text-align: center; margin-top: 50px; margin-bottom: 20px;'>
+            <span style='color: purple; font-size: 10px;'>- Wiwin Wijaya 2026 -</span>
+        </div>
+    """, unsafe_allow_html=True)
 
-
+if __name__ == "__main__":
+    main()
