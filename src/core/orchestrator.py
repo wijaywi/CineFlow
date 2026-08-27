@@ -70,7 +70,7 @@ class Orchestrator:
 
     def initialize_project(self, project_id: str, budget_limit: float = 10.0, max_iterations: int = 5) -> ProjectState:
         if project_id in self.projects:
-            raise ValueError(f"Project {project_id} already exists.")
+            return self.projects[project_id]
         
         state = ProjectState(
             project_id=project_id, 
