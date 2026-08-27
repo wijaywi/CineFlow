@@ -176,7 +176,9 @@ project_id = "CF_PROJECT_000001"
 
 col_head1, col_head2, col_head3 = st.columns([1, 8, 3])
 with col_head1:
-    st.image("cineflow_logo.jpg", width=80)
+    import os
+    logo_path = os.path.join(os.path.dirname(__file__), "cineflow_logo.jpg")
+    st.image(logo_path, width=80)
 with col_head2:
     st.markdown("""
     <div style='margin-top: 5px;'>
