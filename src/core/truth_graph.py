@@ -42,10 +42,11 @@ class TruthGraph:
         sentences = [s.strip() for s in re.split(r'[.!?\n]+', text) if s.strip()]
         
         # Semantic boundary enforcement: skip creative/visual instructions
-        instruction_verbs = {"explain", "show", "display", "add", "use", "cut", "pan", "zoom", "make", "create"}
+        instruction_verbs = {"explain", "show", "display", "add", "use", "cut", "pan", "zoom", "make", "create", "generate", "please", "insert"}
         
         for s in sentences:
-            s_lower = s.lower()
+            s_clean = s.strip('"\\' ')
+            s_lower = s_clean.lower()
             first_word = s_lower.split()[0] if s_lower else ""
             
             if first_word in instruction_verbs:
