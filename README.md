@@ -1,6 +1,6 @@
 
 # 🎬 CineFlow AI
-<img width="800" height="800" alt="Cineflow_Logo" src="https://github.com/user-attachments/assets/ec007fdd-c52b-4cab-a25b-be097229c580" />
+<img width="300" height="300" alt="Cineflow_Logo" src="https://github.com/user-attachments/assets/ec007fdd-c52b-4cab-a25b-be097229c580" />
 **Agentic Cinema Workflow Automation**
 
 Welcome to **CineFlow AI**, an autonomous movie studio agent built for the **Agentic Cinema Hackathon**. CineFlow utilizes a multi-agent network to transform raw footage, A-Roll, and B-Roll into a seamless cinematic production.
