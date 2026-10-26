@@ -4,11 +4,11 @@
 
 **Agentic Cinema Workflow Automation**
 
-Welcome to **CineFlow AI**, an autonomous movie studio agent built for the **Agentic Cinema Hackathon**. CineFlow utilizes a multi-agent network to transform raw footage, A-Roll, and B-Roll into a seamless cinematic production.
+Welcome to **CineFlow AI**, an autonomous movie studio agent built for the **Agentic Cinema**. CineFlow utilizes a multi-agent network to transform raw footage, A-Roll, and B-Roll into a seamless cinematic production.
 
-## 🚀 Key Features & Hackathon Compliance
+## 🚀 Key Features & Compliance
 
-This project has been meticulously crafted to fulfill the core criteria of the Hackathon:
+This project has been meticulously crafted to fulfill the core criteria :
 
 *   **Google Cloud ADK (Phase 1 & 4):** Powered natively by `google-cloud-aiplatform[agent_engines,adk]`. The `DirectorAgent` autonomously orchestrates tools and makes deterministic editing decisions.
 *   **Grafana Labs MCP Integration (Phase 3):** Uses the official `mcp.client.sse` to connect to **Grafana Cloud**. The Director Agent performs *Forced Actions* to check for system incidents (`check_grafana_incidents`) and observability metrics before rendering the final manifest.
